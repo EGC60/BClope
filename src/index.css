@@ -64,3 +64,41 @@ body {
 .rarity-épique { color: #a855f7; border-color: #a855f7; }
 .rarity-unique { color: #f97316; border-color: #f97316; }
 .rarity-mythique { color: #eab308; border-color: #eab308; }
+
+@keyframes flamePulse {
+  0%, 100% { filter: drop-shadow(0 0 4px #f97316); transform: scale(1); }
+  50% { filter: drop-shadow(0 0 10px #f97316) drop-shadow(0 0 20px #f97316aa); transform: scale(1.15); }
+}
+
+@keyframes xpShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes chestBreathe {
+  0%, 100% { filter: drop-shadow(0 0 8px rgba(201,168,76,0.3)); transform: scale(1); }
+  50% { filter: drop-shadow(0 0 20px rgba(201,168,76,0.7)); transform: scale(1.02); }
+}
+
+@keyframes mythicBorder {
+  0% { box-shadow: 0 0 18px rgba(234,179,8,1), 0 0 30px rgba(234,179,8,0.4), inset 0 0 20px rgba(234,179,8,0.05); }
+  50% { box-shadow: 0 0 28px rgba(234,179,8,1), 0 0 50px rgba(234,179,8,0.6), inset 0 0 30px rgba(234,179,8,0.1); }
+  100% { box-shadow: 0 0 18px rgba(234,179,8,1), 0 0 30px rgba(234,179,8,0.4), inset 0 0 20px rgba(234,179,8,0.05); }
+}
+
+@keyframes tabGlow {
+  0%, 100% { filter: drop-shadow(0 0 4px #c9a84c); }
+  50% { filter: drop-shadow(0 0 8px #c9a84c); }
+}
+
+.flame-pulse {
+  animation: flamePulse 1.5s ease-in-out infinite;
+}
+
+.chest-breathe {
+  animation: chestBreathe 2s ease-in-out infinite;
+}
+
+.mythic-card {
+  animation: mythicBorder 2s ease-in-out infinite;
+}

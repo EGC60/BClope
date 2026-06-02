@@ -1,10 +1,11 @@
 import React from 'react'
+import { Flame, Archive, Briefcase, User } from 'lucide-react'
 
 const tabs = [
-  { id: 'autel', label: 'AUTEL', icon: '⚔️' },
-  { id: 'coffre', label: 'COFFRE', icon: '📦' },
-  { id: 'sac', label: 'SAC', icon: '🎒' },
-  { id: 'heros', label: 'HÉROS', icon: '🏆' },
+  { id: 'autel', label: 'AUTEL', Icon: Flame },
+  { id: 'coffre', label: 'COFFRE', Icon: Archive },
+  { id: 'sac', label: 'SAC', Icon: Briefcase },
+  { id: 'heros', label: 'HÉROS', Icon: User },
 ]
 
 export default function TabBar({ active, onSelect }) {
@@ -16,39 +17,51 @@ export default function TabBar({ active, onSelect }) {
       transform: 'translateX(-50%)',
       width: '100%',
       maxWidth: 430,
-      background: 'rgba(10,10,10,0.97)',
+      background: 'rgba(8,6,4,0.98)',
       borderTop: '1px solid rgba(201,168,76,0.3)',
       display: 'flex',
       zIndex: 100,
+      backdropFilter: 'blur(10px)',
     }}>
-      {tabs.map(tab => (
-        <button
-          key={tab.id}
-          onClick={() => onSelect(tab.id)}
-          style={{
-            flex: 1,
-            padding: '10px 4px 14px',
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 2,
-            color: active === tab.id ? '#c9a84c' : '#6b7280',
-            borderTop: active === tab.id ? '2px solid #c9a84c' : '2px solid transparent',
-            transition: 'all 0.2s',
-          }}
-        >
-          <span style={{ fontSize: 20 }}>{tab.icon}</span>
-          <span style={{
-            fontSize: 9,
-            fontFamily: 'Cinzel, serif',
-            fontWeight: 700,
-            letterSpacing: '0.05em',
-          }}>{tab.label}</span>
-        </button>
-      ))}
+      {tabs.map(tab => {
+        const isActive = active === tab.id
+        const color = isActive ? '#c9a84c' : '#4a4a4a'
+        return (
+          <button
+            key={tab.id}
+            onClick={() => onSelect(tab.id)}
+            style={{
+              flex: 1,
+              padding: '10px 4px 14px',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 3,
+              color,
+              borderTop: isActive ? '2px solid #c9a84c' : '2px solid transparent',
+              transition: 'all 0.2s',
+            }}
+          >
+            <tab.Icon
+              size={22}
+              color={color}
+              style={{
+                filter: isActive ? 'drop-shadow(0 0 6px #c9a84c)' : 'none',
+                transition: 'filter 0.2s',
+              }}
+            />
+            <span style={{
+              fontSize: 9,
+              fontFamily: 'Cinzel, serif',
+              fontWeight: 700,
+              letterSpacing: '0.05em',
+            }}>{tab.label}</span>
+          </button>
+        )
+      })}
     </div>
   )
 }
