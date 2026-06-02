@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { generateLoot } from '../utils/loot.js'
 import ItemCard from '../components/ItemCard.jsx'
+import { KeyIcon } from '../components/Icons.jsx'
 
 // Animated chest SVG
 function ChestSVG({ isOpening }) {
@@ -151,6 +152,7 @@ export default function Coffre({ state, openChest, equipItem }) {
         <motion.div
           animate={phase === 'opening' ? { scale: [1, 1.15, 1], rotate: [-2, 2, -2, 0] } : {}}
           transition={{ duration: 0.8 }}
+          className={keys > 0 && phase === 'idle' ? 'chest-breathe' : ''}
         >
           <ChestSVG isOpening={phase === 'opening'} />
         </motion.div>
@@ -158,7 +160,7 @@ export default function Coffre({ state, openChest, equipItem }) {
         {/* Key icons display */}
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'center', maxWidth: 200 }}>
           {Array.from({ length: Math.min(keys, 10) }, (_, i) => (
-            <span key={i} style={{ fontSize: 20 }}>🗝️</span>
+            <KeyIcon key={i} size={22} color="#c9a84c" />
           ))}
           {keys > 10 && <span style={{ color: '#c9a84c', fontFamily: 'Cinzel, serif', fontSize: 12 }}>+{keys - 10}</span>}
         </div>
@@ -186,7 +188,12 @@ export default function Coffre({ state, openChest, equipItem }) {
                 transition: 'all 0.3s',
               }}
             >
-              {phase === 'opening' ? '✨ OUVERTURE...' : keys < 1 ? 'PAS DE CLÉ' : 'OUVRIR LE COFFRE 🗝️'}
+              {phase === 'opening' ? 'OUVERTURE...' : keys < 1 ? 'PAS DE CLÉ' : (
+                <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <KeyIcon size={18} color="#0a0a0a" />
+                  OUVRIR LE COFFRE
+                </span>
+              )}
             </motion.button>
           )}
         </AnimatePresence>
@@ -221,9 +228,9 @@ export default function Coffre({ state, openChest, equipItem }) {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: 'spring', stiffness: 250, damping: 18 }}
-              style={{ marginBottom: 16, fontSize: 13, color: '#c9a84c', fontFamily: 'Cinzel, serif', letterSpacing: '0.1em' }}
+              style={{ marginBottom: 16, fontSize: 13, color: '#c9a84c', fontFamily: 'Cinzel, serif', letterSpacing: '0.1em', textShadow: '0 0 10px rgba(201,168,76,0.8)' }}
             >
-              ✨ OBJET OBTENU ✨
+              ◆ OBJET OBTENU ◆
             </motion.div>
             <ItemCard item={lootedItem} onKeep={handleKeep} onEquip={handleEquip} />
           </motion.div>

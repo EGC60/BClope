@@ -2,6 +2,7 @@ import React from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Character from '../components/Character.jsx'
 import { getLevelName, getXpProgress, LEVEL_THRESHOLDS } from '../utils/xp.js'
+import { FlameIcon, KeyIcon, SmokeIcon, ResistIcon } from '../components/Icons.jsx'
 
 export default function Autel({ state, todayLog, todayGoal, logSmoked, logResisted }) {
   const { xp, level, keys, streak, equipped } = state
@@ -42,7 +43,12 @@ export default function Autel({ state, todayLog, todayGoal, logSmoked, logResist
           borderRadius: 20,
           padding: '6px 14px',
         }}>
-          <span style={{ fontSize: 18 }}>🔥</span>
+          <FlameIcon
+            size={20}
+            color="#f97316"
+            className={streak > 0 ? 'flame-pulse' : ''}
+            style={{ flexShrink: 0 }}
+          />
           <span style={{ fontFamily: 'Cinzel, serif', fontWeight: 700, fontSize: 15, color: '#f97316' }}>
             {streak}
           </span>
@@ -61,7 +67,7 @@ export default function Autel({ state, todayLog, todayGoal, logSmoked, logResist
           <span style={{ fontFamily: 'Cinzel, serif', fontWeight: 700, fontSize: 15, color: '#c9a84c' }}>
             {keys}
           </span>
-          <span style={{ fontSize: 18 }}>🗝️</span>
+          <KeyIcon size={20} color="#c9a84c" style={{ flexShrink: 0 }} />
         </div>
       </div>
 
@@ -154,11 +160,12 @@ export default function Autel({ state, todayLog, todayGoal, logSmoked, logResist
           <span>{nextXp - currentXp}</span>
         </div>
         <div style={{
-          height: 8,
-          background: 'rgba(255,255,255,0.06)',
-          borderRadius: 4,
-          border: '1px solid rgba(201,168,76,0.2)',
+          height: 10,
+          background: 'rgba(0,0,0,0.5)',
+          borderRadius: 5,
+          border: '1px solid rgba(201,168,76,0.25)',
           overflow: 'hidden',
+          boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.6)',
         }}>
           <motion.div
             initial={{ width: 0 }}
@@ -166,9 +173,9 @@ export default function Autel({ state, todayLog, todayGoal, logSmoked, logResist
             transition={{ duration: 0.8, ease: 'easeOut' }}
             style={{
               height: '100%',
-              background: 'linear-gradient(90deg, #c9a84c, #f97316)',
-              borderRadius: 4,
-              boxShadow: '0 0 8px rgba(201,168,76,0.4)',
+              background: 'linear-gradient(90deg, #92400e, #f97316, #fbbf24)',
+              borderRadius: 5,
+              boxShadow: '0 0 10px rgba(249,115,22,0.6)',
             }}
           />
         </div>
@@ -182,19 +189,24 @@ export default function Autel({ state, todayLog, todayGoal, logSmoked, logResist
           style={{
             flex: 1,
             padding: '18px 12px',
-            background: 'linear-gradient(135deg, #991b1b, #dc2626)',
-            border: 'none',
+            background: 'linear-gradient(135deg, #7f1d1d, #dc2626)',
+            border: '1px solid #ef4444',
             borderRadius: 12,
             color: '#fff',
             fontFamily: 'Cinzel, serif',
             fontWeight: 700,
-            fontSize: 14,
+            fontSize: 13,
             cursor: 'pointer',
-            boxShadow: '0 0 20px rgba(220,38,38,0.35)',
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1), 0 4px 15px rgba(0,0,0,0.5), 0 0 20px rgba(220,38,38,0.3)',
             letterSpacing: '0.05em',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 8,
           }}
         >
-          J'AI FUMÉ 🚬
+          <SmokeIcon size={18} color="white" />
+          J'AI FUMÉ
         </motion.button>
         <motion.button
           whileTap={{ scale: 0.95 }}
@@ -202,19 +214,24 @@ export default function Autel({ state, todayLog, todayGoal, logSmoked, logResist
           style={{
             flex: 1,
             padding: '18px 12px',
-            background: 'linear-gradient(135deg, #92400e, #c9a84c)',
-            border: 'none',
+            background: 'linear-gradient(135deg, #78350f, #c9a84c)',
+            border: '1px solid #eab308',
             borderRadius: 12,
             color: '#0a0a0a',
             fontFamily: 'Cinzel, serif',
             fontWeight: 900,
-            fontSize: 14,
+            fontSize: 13,
             cursor: 'pointer',
-            boxShadow: '0 0 20px rgba(201,168,76,0.35)',
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1), 0 4px 15px rgba(0,0,0,0.5), 0 0 20px rgba(201,168,76,0.35)',
             letterSpacing: '0.05em',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 8,
           }}
         >
-          J'AI RÉSISTÉ 💪
+          <ResistIcon size={18} color="#0a0a0a" />
+          J'AI RÉSISTÉ
         </motion.button>
       </div>
     </div>

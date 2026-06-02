@@ -1,19 +1,36 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { RARITY_COLORS, SLOT_ICONS, SLOT_LABELS } from '../data/items.js'
+import { RARITY_COLORS, SLOT_LABELS } from '../data/items.js'
 import RarityBadge from './RarityBadge.jsx'
+import {
+  HelmetIcon, ArmorIcon, SwordIcon, BootIcon, GloveIcon, RingIcon, AmuletIcon, ShieldIcon
+} from './Icons.jsx'
+
+const SLOT_SVG = {
+  helmet: HelmetIcon,
+  armor: ArmorIcon,
+  weapon: SwordIcon,
+  boots: BootIcon,
+  gloves: GloveIcon,
+  ring: RingIcon,
+  amulet: AmuletIcon,
+  shield: ShieldIcon,
+}
 
 export default function ItemCard({ item, onKeep, onEquip }) {
   if (!item) return null
   const color = RARITY_COLORS[item.rarity] || '#9ca3af'
+  const isMythic = item.rarity === 'mythique'
+  const IconComp = SLOT_SVG[item.slot]
 
   return (
     <motion.div
       initial={{ scale: 0.7, opacity: 0, y: 40 }}
       animate={{ scale: 1, opacity: 1, y: 0 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+      className={isMythic ? 'mythic-card' : ''}
       style={{
-        background: '#0f0f0f',
+        background: 'linear-gradient(135deg, rgba(20,10,0,0.95), rgba(5,3,0,0.98))',
         border: `2px solid ${color}`,
         borderRadius: 16,
         padding: '28px 24px',
@@ -21,7 +38,7 @@ export default function ItemCard({ item, onKeep, onEquip }) {
         flexDirection: 'column',
         alignItems: 'center',
         gap: 12,
-        boxShadow: `0 0 30px ${color}40, 0 0 60px ${color}20`,
+        boxShadow: isMythic ? undefined : `0 0 30px ${color}40, 0 0 60px ${color}20`,
         width: '100%',
         maxWidth: 320,
       }}
@@ -37,9 +54,9 @@ export default function ItemCard({ item, onKeep, onEquip }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontSize: 40,
+        boxShadow: `inset 0 0 20px ${color}20`,
       }}>
-        {SLOT_ICONS[item.slot]}
+        {IconComp && <IconComp size={44} color={color} />}
       </div>
 
       <div style={{ textAlign: 'center' }}>
@@ -57,12 +74,16 @@ export default function ItemCard({ item, onKeep, onEquip }) {
           {SLOT_LABELS[item.slot]}
         </div>
         <div style={{
-          fontSize: 16,
+          marginTop: 8,
+          padding: '6px 14px',
+          borderRadius: 20,
+          background: `${color}1a`,
+          border: `1px solid ${color}40`,
+          fontSize: 14,
           fontWeight: 700,
           color: '#f5e6c8',
-          marginTop: 8,
         }}>
-          +{item.statValue} <span style={{ color: color }}>{item.stat}</span>
+          +{item.statValue} <span style={{ color: color, textShadow: `0 0 8px ${color}80` }}>{item.stat}</span>
         </div>
       </div>
 

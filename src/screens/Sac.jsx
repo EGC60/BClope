@@ -1,10 +1,34 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { SLOTS, SLOT_LABELS, SLOT_ICONS, RARITY_COLORS } from '../data/items.js'
+import { SLOTS, SLOT_LABELS, RARITY_COLORS } from '../data/items.js'
 import RarityBadge from '../components/RarityBadge.jsx'
+import {
+  HelmetIcon, ArmorIcon, SwordIcon, BootIcon, GloveIcon, RingIcon, AmuletIcon, ShieldIcon
+} from '../components/Icons.jsx'
+
+const SLOT_SVG_ICONS = {
+  helmet: HelmetIcon,
+  armor: ArmorIcon,
+  weapon: SwordIcon,
+  boots: BootIcon,
+  gloves: GloveIcon,
+  ring: RingIcon,
+  amulet: AmuletIcon,
+  shield: ShieldIcon,
+}
+
+const RARITY_GLOW = {
+  commun: '0 0 8px rgba(156,163,175,0.4)',
+  rare: '0 0 10px rgba(59,130,246,0.6)',
+  épique: '0 0 12px rgba(168,85,247,0.7)',
+  unique: '0 0 14px rgba(249,115,22,0.8)',
+  mythique: '0 0 18px rgba(234,179,8,1), 0 0 30px rgba(234,179,8,0.4)',
+}
 
 function SlotCell({ slotKey, item, onClick }) {
   const color = item ? RARITY_COLORS[item.rarity] : null
+  const IconComp = SLOT_SVG_ICONS[slotKey]
+  const rarityGlow = item ? RARITY_GLOW[item.rarity] : null
   return (
     <motion.button
       whileTap={{ scale: 0.92 }}
@@ -20,11 +44,11 @@ function SlotCell({ slotKey, item, onClick }) {
         gap: 4,
         cursor: 'pointer',
         minWidth: 0,
-        boxShadow: item ? `0 0 8px ${color}30` : 'none',
+        boxShadow: rarityGlow || 'none',
         transition: 'all 0.2s',
       }}
     >
-      <span style={{ fontSize: 22 }}>{SLOT_ICONS[slotKey]}</span>
+      {IconComp && <IconComp size={22} color={item ? color : '#4b5563'} />}
       <span style={{
         fontSize: 8,
         fontFamily: 'Cinzel, serif',
@@ -46,6 +70,8 @@ function SlotCell({ slotKey, item, onClick }) {
 
 function InventoryItem({ item, onClick }) {
   const color = RARITY_COLORS[item.rarity]
+  const IconComp = SLOT_SVG_ICONS[item.slot]
+  const rarityGlow = RARITY_GLOW[item.rarity]
   return (
     <motion.button
       whileTap={{ scale: 0.92 }}
@@ -61,9 +87,10 @@ function InventoryItem({ item, onClick }) {
         gap: 3,
         cursor: 'pointer',
         minWidth: 0,
+        boxShadow: rarityGlow,
       }}
     >
-      <span style={{ fontSize: 20 }}>{SLOT_ICONS[item.slot]}</span>
+      {IconComp && <IconComp size={20} color={color} />}
       <span style={{ fontSize: 8, color, fontFamily: 'Cinzel, serif', textAlign: 'center', lineHeight: 1.2 }}>
         {item.name.length > 12 ? item.name.slice(0, 10) + '…' : item.name}
       </span>
