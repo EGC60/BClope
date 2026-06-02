@@ -1,4 +1,4 @@
-import { SLOTS, ITEM_POOL, STATS, RARITY_COLORS } from '../data/items.js'
+import { HEROES, RARITY_COLORS, RARITY_ORDER, heroesByRarity } from '../data/heroes.js'
 
 const RARITY_RATES = [
   { rarity: 'commun', weight: 60 },
@@ -7,14 +7,6 @@ const RARITY_RATES = [
   { rarity: 'unique', weight: 4 },
   { rarity: 'mythique', weight: 1 },
 ]
-
-const STAT_RANGES = {
-  commun: [5, 10],
-  rare: [11, 20],
-  épique: [21, 35],
-  unique: [36, 50],
-  mythique: [51, 75],
-}
 
 function randomRarity() {
   const total = RARITY_RATES.reduce((s, r) => s + r.weight, 0)
@@ -26,27 +18,29 @@ function randomRarity() {
   return 'commun'
 }
 
-function randInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min
+// Pick a hero of the given rarity. If none exist for that rarity,
+// fall back to the next lower rarity that has heroes defined.
+function pickHeroForRarity(rarity) {
+  let idx = RARITY_ORDER.indexOf(rarity)
+  if (idx < 0) idx = 0
+  for (let i = idx; i >= 0; i--) {
+    const pool = heroesByRarity(RARITY_ORDER[i])
+    if (pool.length > 0) {
+      return pool[Math.floor(Math.random() * pool.length)]
+    }
+  }
+  // Last resort: any hero at all.
+  return HEROES[Math.floor(Math.random() * HEROES.length)]
 }
 
-export function generateLoot() {
+export function rollHero() {
   const rarity = randomRarity()
-  const slot = SLOTS[Math.floor(Math.random() * SLOTS.length)]
-  const pool = ITEM_POOL[slot].filter(i => i.rarity === rarity)
-  const item = pool.length > 0 ? pool[0] : ITEM_POOL[slot][0]
-  const stat = STATS[Math.floor(Math.random() * STATS.length)]
-  const [min, max] = STAT_RANGES[rarity]
-  const statValue = randInt(min, max)
-  const id = `${slot}_${rarity}_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`
-
+  const hero = pickHeroForRarity(rarity)
   return {
-    id,
-    slot,
-    rarity,
-    name: item.name,
-    stat,
-    statValue,
-    color: RARITY_COLORS[rarity],
+    id: hero.id,
+    name: hero.name,
+    rarity: hero.rarity,
+    image: hero.image,
+    color: RARITY_COLORS[hero.rarity],
   }
 }

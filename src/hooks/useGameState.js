@@ -1,6 +1,8 @@
 import { useState, useCallback } from 'react'
 import { getLevel } from '../utils/xp.js'
 import { QUESTS } from '../data/quests.js'
+import { rollHero } from '../utils/loot.js'
+import { STARTER_HERO_ID, DUPLICATE_XP } from '../data/heroes.js'
 
 const STORAGE_KEY = 'smokeslayer_state'
 
@@ -13,8 +15,8 @@ const DEFAULT_STATE = {
   keys: 0,
   streak: 0,
   bestStreak: 0,
-  equipped: { helmet: null, armor: null, weapon: null, boots: null, gloves: null, ring: null, amulet: null, shield: null },
-  inventory: [],
+  ownedHeroes: [STARTER_HERO_ID],
+  activeHero: STARTER_HERO_ID,
   quests: QUESTS.map(q => ({ id: q.id, completed: false, progress: 0 })),
   chestsOpened: 0,
   dailyResists: {},
@@ -29,12 +31,24 @@ function loadState() {
     const questIds = QUESTS.map(q => q.id)
     const existingIds = (parsed.quests || []).map(q => q.id)
     const missingQuests = QUESTS.filter(q => !existingIds.includes(q.id)).map(q => ({ id: q.id, completed: false, progress: 0 }))
-    return {
+    // Backward-compat: ensure hero collection fields exist
+    const ownedHeroes = Array.isArray(parsed.ownedHeroes) && parsed.ownedHeroes.length > 0
+      ? parsed.ownedHeroes
+      : [STARTER_HERO_ID]
+    const activeHero = parsed.activeHero && ownedHeroes.includes(parsed.activeHero)
+      ? parsed.activeHero
+      : STARTER_HERO_ID
+    const merged = {
       ...DEFAULT_STATE,
       ...parsed,
       quests: [...(parsed.quests || []), ...missingQuests],
-      equipped: { ...DEFAULT_STATE.equipped, ...(parsed.equipped || {}) },
+      ownedHeroes,
+      activeHero,
     }
+    // Drop legacy equipment fields if present
+    delete merged.equipped
+    delete merged.inventory
+    return merged
   } catch {
     return { ...DEFAULT_STATE }
   }
@@ -93,7 +107,7 @@ export function useGameState() {
   }
 
   function computeQuestProgress(newState) {
-    const { dailyLogs, streak, bestStreak, chestsOpened, inventory, setup } = newState
+    const { dailyLogs, streak, bestStreak, chestsOpened, ownedHeroes, setup } = newState
     const pricePerCig = setup ? setup.pricePerPouch / setup.cigarettesPerPouch : 0
 
     let daysUnderGoal = 0
@@ -112,7 +126,7 @@ export function useGameState() {
       if (def.type === 'daysUnderGoal') progress = daysUnderGoal
       if (def.type === 'streak') progress = Math.max(streak, bestStreak)
       if (def.type === 'chestsOpened') progress = chestsOpened || 0
-      if (def.type === 'itemsObtained') progress = inventory.length
+      if (def.type === 'heroesCollected') progress = (ownedHeroes || []).length
       if (def.type === 'moneySaved') progress = moneySaved
       const completed = progress >= def.target
       return { ...q, progress: Math.min(progress, def.target), completed }
@@ -183,31 +197,45 @@ export function useGameState() {
     })
   }
 
-  function openChest(item) {
+  function openChest() {
+    if (state.keys < 1) return null
+
+    // Roll the hero once and capture the result, then commit state.
+    const hero = rollHero()
+    const duplicate = state.ownedHeroes.includes(hero.id)
+    const xpGained = duplicate ? (DUPLICATE_XP[hero.rarity] || 0) : 0
+    const result = duplicate ? { hero, duplicate: true, xpGained } : { hero, duplicate: false }
+
     setState(prev => {
-      const newInventory = [...prev.inventory, item]
       const newChests = (prev.chestsOpened || 0) + 1
-      const base = {
-        ...prev,
-        keys: Math.max(0, prev.keys - 1),
-        inventory: newInventory,
-        chestsOpened: newChests,
+      let base
+      if (prev.ownedHeroes.includes(hero.id)) {
+        const newXp = prev.xp + xpGained
+        base = {
+          ...prev,
+          keys: Math.max(0, prev.keys - 1),
+          chestsOpened: newChests,
+          xp: newXp,
+          level: getLevel(newXp),
+        }
+      } else {
+        base = {
+          ...prev,
+          keys: Math.max(0, prev.keys - 1),
+          chestsOpened: newChests,
+          ownedHeroes: [...prev.ownedHeroes, hero.id],
+        }
       }
       return { ...base, quests: computeQuestProgress(base) }
     })
+
+    return result
   }
 
-  function equipItem(item) {
+  function setActiveHero(heroId) {
     setState(prev => {
-      const newEquipped = { ...prev.equipped, [item.slot]: item }
-      return { ...prev, equipped: newEquipped }
-    })
-  }
-
-  function unequipSlot(slot) {
-    setState(prev => {
-      const newEquipped = { ...prev.equipped, [slot]: null }
-      return { ...prev, equipped: newEquipped }
+      if (!prev.ownedHeroes.includes(heroId)) return prev
+      return { ...prev, activeHero: heroId }
     })
   }
 
@@ -216,6 +244,8 @@ export function useGameState() {
       ...prev,
       setup: setupData,
       startDate: new Date().toISOString(),
+      ownedHeroes: prev.ownedHeroes && prev.ownedHeroes.length > 0 ? prev.ownedHeroes : [STARTER_HERO_ID],
+      activeHero: prev.activeHero || STARTER_HERO_ID,
     }))
   }
 
@@ -254,8 +284,7 @@ export function useGameState() {
     logSmoked,
     logResisted,
     openChest,
-    equipItem,
-    unequipSlot,
+    setActiveHero,
     completeSetup,
     resetGame,
     getDailyGoal,

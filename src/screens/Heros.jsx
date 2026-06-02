@@ -2,7 +2,9 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import { getLevelName, getXpProgress, LEVEL_THRESHOLDS } from '../utils/xp.js'
 import { QUESTS } from '../data/quests.js'
-import { FlameIcon, SwordIcon } from '../components/Icons.jsx'
+import { FlameIcon } from '../components/Icons.jsx'
+import HeroPortrait from '../components/HeroPortrait.jsx'
+import { getHero, RARITY_COLORS } from '../data/heroes.js'
 
 function StatCard({ label, value, icon }) {
   return (
@@ -35,6 +37,8 @@ function StatCard({ label, value, icon }) {
 
 export default function Heros({ state, moneySaved, daysInGame, daysUnderGoal }) {
   const { xp, level, streak, bestStreak, dailyLogs, setup, quests } = state
+  const hero = getHero(state.activeHero)
+  const heroColor = hero ? RARITY_COLORS[hero.rarity] : '#c9a84c'
   const levelName = getLevelName(level)
   const xpProgress = getXpProgress(xp, level)
   const nextXp = LEVEL_THRESHOLDS[Math.min(level + 1, LEVEL_THRESHOLDS.length - 1)]
@@ -88,28 +92,30 @@ export default function Heros({ state, moneySaved, daysInGame, daysUnderGoal }) 
         padding: 16,
       }}>
         <div style={{
-          width: 56,
-          height: 56,
-          borderRadius: '50%',
-          background: 'linear-gradient(135deg, #451a03, #92400e)',
-          border: '2px solid #c9a84c',
+          width: 64,
+          height: 64,
+          borderRadius: 12,
+          background: `${heroColor}10`,
+          border: `2px solid ${heroColor}`,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           flexShrink: 0,
-          boxShadow: '0 0 12px rgba(201,168,76,0.4)',
+          overflow: 'hidden',
+          boxShadow: `0 0 12px ${heroColor}50`,
         }}>
-          <SwordIcon size={28} color="#c9a84c" />
+          {hero && <HeroPortrait hero={hero} size={44} />}
         </div>
         <div style={{ flex: 1 }}>
           <div style={{
             fontFamily: 'Cinzel, serif',
             fontSize: 14,
             fontWeight: 700,
-            color: '#c9a84c',
+            color: heroColor,
             letterSpacing: '0.08em',
+            textShadow: `0 0 8px ${heroColor}50`,
           }}>
-            CHASSEUR DE DÉMONS
+            {hero ? hero.name : 'CHASSEUR DE DÉMONS'}
           </div>
           <div style={{ fontSize: 12, color: '#9ca3af', marginBottom: 6 }}>
             Niveau {level} — {levelName}

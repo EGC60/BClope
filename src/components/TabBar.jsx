@@ -1,11 +1,11 @@
 import React from 'react'
-import { Flame, Archive, Briefcase, User } from 'lucide-react'
+import { Flame, Archive, Users, BarChart3 } from 'lucide-react'
 
 const tabs = [
   { id: 'autel', label: 'AUTEL', Icon: Flame },
   { id: 'coffre', label: 'COFFRE', Icon: Archive },
-  { id: 'sac', label: 'SAC', Icon: Briefcase },
-  { id: 'heros', label: 'HÉROS', Icon: User },
+  { id: 'sac', label: 'HÉROS', Icon: Users },
+  { id: 'heros', label: 'PROFIL', Icon: BarChart3 },
 ]
 
 export default function TabBar({ active, onSelect }) {

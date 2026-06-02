@@ -19,8 +19,7 @@ export default function App() {
     logSmoked,
     logResisted,
     openChest,
-    equipItem,
-    unequipSlot,
+    setActiveHero,
     completeSetup,
     getDailyGoal,
   } = useGameState()
@@ -45,14 +44,13 @@ export default function App() {
         <Coffre
           state={state}
           openChest={openChest}
-          equipItem={equipItem}
+          setActiveHero={setActiveHero}
         />
       )}
       {tab === 'sac' && (
         <Sac
           state={state}
-          equipItem={equipItem}
-          unequipSlot={unequipSlot}
+          setActiveHero={setActiveHero}
         />
       )}
       {tab === 'heros' && (

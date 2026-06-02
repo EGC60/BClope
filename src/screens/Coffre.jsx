@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { generateLoot } from '../utils/loot.js'
-import ItemCard from '../components/ItemCard.jsx'
+import HeroPortrait from '../components/HeroPortrait.jsx'
+import { RARITY_LABELS } from '../data/heroes.js'
 import { KeyIcon } from '../components/Icons.jsx'
 
 // Animated chest SVG
@@ -69,33 +69,35 @@ function ChestSVG({ isOpening }) {
   )
 }
 
-export default function Coffre({ state, openChest, equipItem }) {
+export default function Coffre({ state, openChest, setActiveHero }) {
   const { keys } = state
   const [phase, setPhase] = useState('idle') // idle | opening | reveal
-  const [lootedItem, setLootedItem] = useState(null)
+  const [result, setResult] = useState(null) // { hero, duplicate, xpGained }
 
   function handleOpen() {
     if (keys < 1 || phase !== 'idle') return
     setPhase('opening')
-    const item = generateLoot()
     setTimeout(() => {
-      openChest(item)
-      setLootedItem(item)
+      const res = openChest()
+      if (!res) {
+        setPhase('idle')
+        return
+      }
+      setResult(res)
       setPhase('reveal')
     }, 800)
   }
 
-  function handleKeep() {
-    setLootedItem(null)
+  function handleClose() {
+    setResult(null)
     setPhase('idle')
   }
 
-  function handleEquip() {
-    if (lootedItem) {
-      equipItem(lootedItem)
+  function handleIncarner() {
+    if (result?.hero) {
+      setActiveHero(result.hero.id)
     }
-    setLootedItem(null)
-    setPhase('idle')
+    handleClose()
   }
 
   return (
@@ -207,7 +209,7 @@ export default function Coffre({ state, openChest, equipItem }) {
 
       {/* Reveal overlay */}
       <AnimatePresence>
-        {phase === 'reveal' && lootedItem && (
+        {phase === 'reveal' && result && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -215,7 +217,7 @@ export default function Coffre({ state, openChest, equipItem }) {
             style={{
               position: 'fixed',
               inset: 0,
-              background: 'rgba(0,0,0,0.85)',
+              background: 'rgba(0,0,0,0.88)',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
@@ -224,18 +226,129 @@ export default function Coffre({ state, openChest, equipItem }) {
               padding: 24,
             }}
           >
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: 'spring', stiffness: 250, damping: 18 }}
-              style={{ marginBottom: 16, fontSize: 13, color: '#c9a84c', fontFamily: 'Cinzel, serif', letterSpacing: '0.1em', textShadow: '0 0 10px rgba(201,168,76,0.8)' }}
-            >
-              ◆ OBJET OBTENU ◆
-            </motion.div>
-            <ItemCard item={lootedItem} onKeep={handleKeep} onEquip={handleEquip} />
+            <RevealCard
+              result={result}
+              onIncarner={handleIncarner}
+              onClose={handleClose}
+            />
           </motion.div>
         )}
       </AnimatePresence>
     </div>
+  )
+}
+
+function RevealCard({ result, onIncarner, onClose }) {
+  const { hero, duplicate, xpGained } = result
+  const color = hero.color || '#9ca3af'
+
+  const darkBtn = {
+    flex: 1,
+    padding: '13px 0',
+    background: 'rgba(255,255,255,0.05)',
+    border: '1px solid rgba(255,255,255,0.15)',
+    borderRadius: 8,
+    color: '#f5e6c8',
+    fontFamily: 'Cinzel, serif',
+    fontWeight: 700,
+    fontSize: 13,
+    cursor: 'pointer',
+    letterSpacing: '0.05em',
+  }
+  const goldBtn = {
+    flex: 1,
+    padding: '13px 0',
+    background: 'linear-gradient(135deg, #c9a84c, #f97316)',
+    border: 'none',
+    borderRadius: 8,
+    color: '#0a0a0a',
+    fontFamily: 'Cinzel, serif',
+    fontWeight: 900,
+    fontSize: 13,
+    cursor: 'pointer',
+    boxShadow: '0 0 15px rgba(201,168,76,0.4)',
+    letterSpacing: '0.05em',
+  }
+
+  return (
+    <motion.div
+      initial={{ scale: 0, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ type: 'spring', stiffness: 250, damping: 18 }}
+      style={{
+        background: 'linear-gradient(135deg, rgba(20,10,0,0.95), rgba(5,3,0,0.98))',
+        border: `2px solid ${color}`,
+        borderRadius: 16,
+        padding: '26px 24px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: 14,
+        width: '100%',
+        maxWidth: 320,
+        boxShadow: `0 0 30px ${color}40, 0 0 60px ${color}20`,
+      }}
+    >
+      {/* Hero portrait */}
+      <div style={{ opacity: duplicate ? 0.5 : 1 }}>
+        <HeroPortrait hero={hero} size={130} />
+      </div>
+
+      {duplicate ? (
+        <>
+          <div style={{
+            fontFamily: 'Cinzel, serif',
+            fontSize: 13,
+            fontWeight: 700,
+            color: '#9ca3af',
+            letterSpacing: '0.1em',
+          }}>
+            DÉJÀ POSSÉDÉ
+          </div>
+          <div style={{ fontSize: 13, color: '#f5e6c8', fontFamily: 'Cinzel, serif', opacity: 0.8 }}>
+            {hero.name}
+          </div>
+          <div style={{
+            fontFamily: 'Cinzel, serif',
+            fontSize: 30,
+            fontWeight: 900,
+            color: '#fbbf24',
+            textShadow: '0 0 18px rgba(251,191,36,0.7)',
+          }}>
+            +{xpGained} XP
+          </div>
+          <button onClick={onClose} style={{ ...goldBtn, width: '100%', flex: 'unset' }}>
+            CONTINUER
+          </button>
+        </>
+      ) : (
+        <>
+          <div style={{
+            fontFamily: 'Cinzel, serif',
+            fontSize: 13,
+            fontWeight: 700,
+            color,
+            letterSpacing: '0.12em',
+            textShadow: `0 0 12px ${color}, 0 0 20px ${color}80`,
+          }}>
+            {RARITY_LABELS[hero.rarity] || hero.rarity?.toUpperCase()}
+          </div>
+          <div style={{
+            fontFamily: 'Cinzel, serif',
+            fontSize: 18,
+            fontWeight: 700,
+            color,
+            textAlign: 'center',
+            textShadow: `0 0 10px ${color}60`,
+          }}>
+            {hero.name}
+          </div>
+          <div style={{ display: 'flex', gap: 12, width: '100%', marginTop: 4 }}>
+            <button onClick={onClose} style={darkBtn}>PLUS TARD</button>
+            <button onClick={onIncarner} style={goldBtn}>INCARNER</button>
+          </div>
+        </>
+      )}
+    </motion.div>
   )
 }

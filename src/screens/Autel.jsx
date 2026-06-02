@@ -1,11 +1,14 @@
 import React from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import Character from '../components/Character.jsx'
+import { motion } from 'framer-motion'
+import HeroPortrait from '../components/HeroPortrait.jsx'
+import { getHero, RARITY_COLORS } from '../data/heroes.js'
 import { getLevelName, getXpProgress, LEVEL_THRESHOLDS } from '../utils/xp.js'
 import { FlameIcon, KeyIcon, SmokeIcon, ResistIcon } from '../components/Icons.jsx'
 
 export default function Autel({ state, todayLog, todayGoal, logSmoked, logResisted }) {
-  const { xp, level, keys, streak, equipped } = state
+  const { xp, level, keys, streak } = state
+  const hero = getHero(state.activeHero)
+  const heroColor = hero ? RARITY_COLORS[hero.rarity] : '#9ca3af'
   const levelName = getLevelName(level)
   const xpProgress = getXpProgress(xp, level)
   const nextXp = LEVEL_THRESHOLDS[Math.min(level + 1, LEVEL_THRESHOLDS.length - 1)]
@@ -114,8 +117,24 @@ export default function Autel({ state, todayLog, todayGoal, logSmoked, logResist
           borderRadius: '50%',
           background: 'radial-gradient(ellipse, rgba(6,182,212,0.12) 0%, transparent 70%)',
         }} />
-        <Character equipped={equipped} style={{ maxHeight: '100%', width: 'auto' }} />
+        {hero && <HeroPortrait hero={hero} size={110} />}
       </div>
+
+      {/* Active hero name */}
+      {hero && (
+        <div style={{ textAlign: 'center', marginBottom: 2, flexShrink: 0 }}>
+          <span style={{
+            fontFamily: 'Cinzel, serif',
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: '0.08em',
+            color: heroColor,
+            textShadow: `0 0 8px ${heroColor}60`,
+          }}>
+            {hero.name}
+          </span>
+        </div>
+      )}
 
       {/* Cigarette diamonds */}
       <div style={{ textAlign: 'center', marginBottom: 4, flexShrink: 0 }}>
