@@ -10,7 +10,7 @@ export const RARITY_ORDER = ['commun', 'rare', 'épique', 'unique', 'mythique']
 export const HEROES = [
   // ── COMMUN ──────────────────────────────────────────────────────────────
   { id: 'naruto_genin',   name: 'Naruto Genin',         rarity: 'commun',   image: 'naruto_genin.png' },
-  { id: 'sakura',         name: 'Sakura Haruno',         rarity: 'commun',   image: null },
+  { id: 'sakura',         name: 'Sakura Haruno',         rarity: 'commun',   image: 'sakura.png' },
   { id: 'shikamaru',      name: 'Shikamaru Nara',        rarity: 'commun',   image: null },
   { id: 'orihime',        name: 'Orihime Inoue',         rarity: 'commun',   image: null },
   { id: 'kite',           name: 'Kite',                  rarity: 'commun',   image: null },
