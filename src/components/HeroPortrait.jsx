@@ -81,11 +81,13 @@ export default function HeroPortrait({ hero, size = 120, locked = false }) {
   if (!locked && hero && hero.image) {
     const glow = `drop-shadow(0 0 8px ${color}) drop-shadow(0 0 18px ${color}80)`
     return (
-      <img
-        src={`${import.meta.env.BASE_URL}heroes/${hero.image}`}
-        alt={hero.name}
-        style={{ width: size, height: 'auto', objectFit: 'contain', filter: glow, display: 'block' }}
-      />
+      <div style={{ width: size, height: size * 1.25, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}>
+        <img
+          src={`${import.meta.env.BASE_URL}heroes/${hero.image}`}
+          alt={hero.name}
+          style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: '100%', objectFit: 'contain', filter: glow, display: 'block' }}
+        />
+      </div>
     )
   }
 
