@@ -11,14 +11,14 @@ export const HEROES = [
   // ── COMMUN ──────────────────────────────────────────────────────────────
   { id: 'naruto_genin',   name: 'Naruto Genin',         rarity: 'commun',   image: 'naruto_genin.png' },
   { id: 'sakura',         name: 'Sakura Haruno',         rarity: 'commun',   image: 'sakura.png' },
-  { id: 'shikamaru',      name: 'Shikamaru Nara',        rarity: 'commun',   image: null },
+  { id: 'shikamaru',      name: 'Shikamaru Nara',        rarity: 'commun',   image: 'shikamaru.png' },
   { id: 'orihime',        name: 'Orihime Inoue',         rarity: 'commun',   image: null },
   { id: 'kite',           name: 'Kite',                  rarity: 'commun',   image: null },
   { id: 'palm',           name: 'Palm Siberia',          rarity: 'commun',   image: null },
 
   // ── RARE ────────────────────────────────────────────────────────────────
-  { id: 'kakashi',        name: 'Kakashi Hatake',        rarity: 'rare',     image: null },
-  { id: 'rock_lee',       name: 'Rock Lee',              rarity: 'rare',     image: null },
+  { id: 'kakashi',        name: 'Kakashi Hatake',        rarity: 'rare',     image: 'kakashi.png' },
+  { id: 'rock_lee',       name: 'Rock Lee',              rarity: 'rare',     image: 'rock_lee.png' },
   { id: 'hitsugaya',      name: 'Tōshirō Hitsugaya',    rarity: 'rare',     image: null },
   { id: 'renji',          name: 'Renji Abarai',          rarity: 'rare',     image: null },
   { id: 'kurapika',       name: 'Kurapika',              rarity: 'rare',     image: null },
@@ -26,7 +26,7 @@ export const HEROES = [
   { id: 'ging',           name: 'Ging Freecss',          rarity: 'rare',     image: null },
 
   // ── ÉPIQUE ──────────────────────────────────────────────────────────────
-  { id: 'itachi',         name: 'Itachi Uchiha',         rarity: 'épique',   image: null },
+  { id: 'itachi',         name: 'Itachi Uchiha',         rarity: 'épique',   image: 'itachi.png' },
   { id: 'jiraiya',        name: 'Jiraiya',               rarity: 'épique',   image: null },
   { id: 'pain',           name: 'Pain / Nagato',         rarity: 'épique',   image: null },
   { id: 'byakuya',        name: 'Byakuya Kuchiki',       rarity: 'épique',   image: null },
