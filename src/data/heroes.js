@@ -27,16 +27,16 @@ export const HEROES = [
 
   // ── ÉPIQUE ──────────────────────────────────────────────────────────────
   { id: 'itachi',         name: 'Itachi Uchiha',         rarity: 'épique',   image: 'itachi.png' },
-  { id: 'jiraiya',        name: 'Jiraiya',               rarity: 'épique',   image: null },
-  { id: 'pain',           name: 'Pain / Nagato',         rarity: 'épique',   image: null },
-  { id: 'byakuya',        name: 'Byakuya Kuchiki',       rarity: 'épique',   image: null },
+  { id: 'jiraiya',        name: 'Jiraiya',               rarity: 'épique',   image: 'jiraiya.png' },
+  { id: 'pain',           name: 'Pain / Nagato',         rarity: 'épique',   image: 'pain.png' },
+  { id: 'byakuya',        name: 'Byakuya Kuchiki',       rarity: 'épique',   image: 'byakuya.png' },
   { id: 'ulquiorra',      name: 'Ulquiorra Cifer',       rarity: 'épique',   image: null },
   { id: 'grimmjow',       name: 'Grimmjow',              rarity: 'épique',   image: null },
-  { id: 'hisoka',         name: 'Hisoka',                rarity: 'épique',   image: null },
+  { id: 'hisoka',         name: 'Hisoka',                rarity: 'épique',   image: 'hisoka.png' },
   { id: 'chrollo',        name: 'Chrollo Lucilfer',      rarity: 'épique',   image: null },
 
   // ── UNIQUE ──────────────────────────────────────────────────────────────
-  { id: 'madara',         name: 'Madara Uchiha',         rarity: 'unique',   image: null },
+  { id: 'madara',         name: 'Madara Uchiha',         rarity: 'unique',   image: 'madara.png' },
   { id: 'minato',         name: 'Minato Namikaze',       rarity: 'unique',   image: null },
   { id: 'aizen',          name: 'Aizen Sōsuke',         rarity: 'unique',   image: null },
   { id: 'kenpachi',       name: 'Kenpachi Zaraki',       rarity: 'unique',   image: null },
